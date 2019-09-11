@@ -33,7 +33,7 @@ function rangeBpProver(x1,pedCom1,r0,r1){
   const rho = pickRandom(Consts.q);
 
   const gVector = [];
-  const hVector = []; 
+  const hVector = [];
   var gRand;
   var hRand;
   const H = utils.ec.g.mul((r0.toString(Consts.HEX)));
@@ -121,7 +121,7 @@ function rangeBpProver(x1,pedCom1,r0,r1){
   const T1 = utils.ec.g.mul(t1.toString(Consts.HEX)).add(H.mul(tau1.toString(Consts.HEX)));
   const T2 = utils.ec.g.mul(t2.toString(Consts.HEX)).add(H.mul(tau2.toString(Consts.HEX)));
 
-  //fiat shamir for verifier challenge: 
+  //fiat shamir for verifier challenge:
   const concatStrings = T1.x.fromRed().toString(16).concat(T2.x.fromRed().toString(16)).concat(H.x.fromRed().toString(16));
   const temp = crypto.createHash('sha256').update(concatStrings).digest('hex');
   const xFiatShamirChall = modulo(BigInteger(temp,Consts.HEX),Consts.q);
@@ -147,7 +147,7 @@ function rangeBpProver(x1,pedCom1,r0,r1){
     //(A + B) mod C = (A mod C + B mod C) mod C
     LpPart1 = modulo(modulo(SL[j],Consts.q).multiply(modulo(xFiatShamirChall,Consts.q)),Consts.q);
     //Lp[j] = modulo(modulo(aL[j].subtract(z),Consts.q).add(LpPart1),Consts.q);
-    Lp[j] = moduloAddq(moduloSubq(aL[j],z),LpPart1);    
+    Lp[j] = moduloAddq(moduloSubq(aL[j],z),LpPart1);
     //Lp[j] = aL[j].subtract(z).add(SL[j].multiply(xFiatShamirChall));
     RpPart1 = modulo(modulo(SR[j],Consts.q).multiply(modulo(xFiatShamirChall,Consts.q)),Consts.q);
     RpPart2 = modulo(modulo(zSquared,Consts.q).multiply(moduloPow(BigInteger(2),j,Consts.q)),Consts.q);
@@ -238,7 +238,7 @@ function innerProductArgument(nic1,P, Lp,Rp,H,hiTag,gVector){
     i1=0;
 
     while (i1<nTag){
-  
+
       cLi= modulo(modulo(aTag[i1],Consts.q).multiply(modulo(bTag[nTag+i1],Consts.q)),Consts.q);
       cRi = modulo(modulo(aTag[nTag+i1],Consts.q).multiply(modulo(bTag[i1],Consts.q)),Consts.q);
       cL = moduloAddq(cL,cLi);
@@ -249,10 +249,10 @@ function innerProductArgument(nic1,P, Lp,Rp,H,hiTag,gVector){
 
       i1++;
     }
-  
+
     L[j] = L[j].add(utils.ec.g.mul(cL.toString(Consts.HEX)).mul(nic1.toString(Consts.HEX)));
     R[j] = R[j].add(utils.ec.g.mul(cR.toString(Consts.HEX)).mul(nic1.toString(Consts.HEX)));
-    
+
      transcript = L[j].x.fromRed().toString(16).concat(R[j].x.fromRed().toString(16)).concat(H.x.fromRed().toString(16));
      NIchallenge = crypto.createHash('sha256').update(transcript).digest('hex');
       x = modulo(BigInteger(NIchallenge,Consts.HEX),Consts.q);
@@ -269,7 +269,7 @@ function innerProductArgument(nic1,P, Lp,Rp,H,hiTag,gVector){
      b= bTag;
      aTag = [];
      bTag =[];
-  
+
     i2=0;
     while (i2<nTag){
     //  if(i2==nPad/2-1){//correction for padding g,h
@@ -285,7 +285,7 @@ function innerProductArgument(nic1,P, Lp,Rp,H,hiTag,gVector){
       bTag[i2] = modulo(modulo(b[i2].multiply(xinv),Consts.q).add(modulo(b[nTag+i2].multiply(x),Consts.q)),Consts.q);
       i2++;
      }
-  
+
     Ptag = (L[j].mul(xSquare.toString(Consts.HEX))).add(Ptag).add(R[j].mul(xSquareInv.toString(Consts.HEX)));
     j++;
     nTag= nTag/2;
@@ -303,7 +303,7 @@ function innerProductArgument(nic1,P, Lp,Rp,H,hiTag,gVector){
 
 
 function rangeBpVerifier(r0,r1,pedCom1,A,S,T1,T2,tauX,miu,tX,L,R,aTag,bTag){
-  
+
   const crypto = require('crypto');
   const BigInteger = require('big-integer');
   const Consts = require('./consts');
@@ -318,9 +318,9 @@ function rangeBpVerifier(r0,r1,pedCom1,A,S,T1,T2,tauX,miu,tX,L,R,aTag,bTag){
    var result10 = true;
 
 
-  //creating g and h vectors: 
+  //creating g and h vectors:
   var gVector = [];
-  var hVector = []; 
+  var hVector = [];
   var gRand;
   var hRand;
   const H = utils.ec.g.mul((r0.toString(Consts.HEX)));
@@ -372,7 +372,7 @@ function rangeBpVerifier(r0,r1,pedCom1,A,S,T1,T2,tauX,miu,tX,L,R,aTag,bTag){
   const temp = crypto.createHash('sha256').update(concatStrings).digest('hex');
   const xFiatShamirChall = modulo(BigInteger(temp,Consts.HEX),Consts.q);
   const xFiatShamirChallSquared = moduloPow(xFiatShamirChall,2,Consts.q);
-   
+
   const eq63LeftSide = (utils.ec.g.mul(tX.toString(Consts.HEX))).add(H.mul(tauX.toString(Consts.HEX)));
   const eq63RightSide = (utils.ec.g.mul(t0.toString(Consts.HEX))).add(pedCom1.mul(zSquared.toString(Consts.HEX))).add(T1.mul(xFiatShamirChall.toString(Consts.HEX))).add(T2.mul(xFiatShamirChallSquared.toString(Consts.HEX)));
   if(eq63LeftSide.x.fromRed().toString(16)!=eq63RightSide.x.fromRed().toString(16)){result10=false;}
@@ -385,7 +385,7 @@ function rangeBpVerifier(r0,r1,pedCom1,A,S,T1,T2,tauX,miu,tX,L,R,aTag,bTag){
 
 
   //line 62 :
- 
+
  var P = utils.ec.g.mul(nic1.toString(Consts.HEX)).mul(tX.toString(Consts.HEX)).add(H.mul(((Consts.q).subtract(miu)).toString(Consts.HEX)))
 
   P = P.add(A).add(S.mul(xFiatShamirChall.toString(Consts.HEX)));
@@ -415,7 +415,7 @@ function rangeBpVerifier(r0,r1,pedCom1,A,S,T1,T2,tauX,miu,tX,L,R,aTag,bTag){
     var hVectorTag = hiTag;
    j = 0;
   while(nTag>=1){
-    
+
      transcript = L[j].x.fromRed().toString(16).concat(R[j].x.fromRed().toString(16)).concat(H.x.fromRed().toString(16));
      NIchallenge = crypto.createHash('sha256').update(transcript).digest('hex');
       x = BigInteger(NIchallenge,Consts.HEX);
@@ -426,8 +426,8 @@ function rangeBpVerifier(r0,r1,pedCom1,A,S,T1,T2,tauX,miu,tX,L,R,aTag,bTag){
     hiTag = hVectorTag;
      gVectorTag = [];
      hVectorTag = [];
- 
-  
+
+
     i2=0;
     while (i2<nTag){
     //  if(i2==nPad/2-1){//correction for padding g,h
@@ -442,7 +442,7 @@ function rangeBpVerifier(r0,r1,pedCom1,A,S,T1,T2,tauX,miu,tX,L,R,aTag,bTag){
 
       i2++;
      }
-  
+
     Ptag = (L[j].mul(xSquare.toString(Consts.HEX))).add(Ptag).add(R[j].mul(xSquareInv.toString(Consts.HEX)));
     j++;
     nTag= nTag/2;
@@ -464,7 +464,7 @@ function rangeBpVerifier(r0,r1,pedCom1,A,S,T1,T2,tauX,miu,tX,L,R,aTag,bTag){
 
 /*###################################### TEST  #####################################*/
 
-function controller(){
+function prove(secret, lower, upper){
 
   const BigInteger = require('big-integer');
   const Consts = require('./consts');
@@ -480,70 +480,104 @@ function controller(){
 
   if(Consts.upperBoundNumBits>256){console.log("error: upper bound should be <256bits");return;}
   if(padSize>0){console.log("error: range works only for powers of 2 for now");return;}
-const x1 = turnToBig(97)
-const start=turnToBig(0)
-const end=turnToBig(99)
-const x_minus_b=x1.subtract(end).add(turnToBig(Consts.MAX_RANGE_END))
-const r0 = pickRandom(Consts.q)
-const r1 = pickRandom(Consts.q)
-const r2 =pickRandom(Consts.q,r0)
-const r3 = pickRandom(Consts.q,r1)
-const difference=x1.subtract(start);
-// prover proves that they have x1
-const pedCom1 =utils.ec.g.mul(x1.toString(Consts.HEX)).add(utils.ec.g.mul((r2.multiply(r3)).toString(Consts.HEX)));
+  const x1 = turnToBig(secret)
+  const start=turnToBig(lower)
+  const end=turnToBig(upper)
+  const x_minus_b=x1.subtract(end).add(turnToBig(Consts.MAX_RANGE_END))
+  const r0 = pickRandom(Consts.q)
+  const r1 = pickRandom(Consts.q)
+  const r2 =pickRandom(Consts.q,r0)
+  const r3 = pickRandom(Consts.q,r1)
+  const difference=x1.subtract(start);
+  // prover proves that they have x1
+  const pedCom1 =utils.ec.g.mul(x1.toString(Consts.HEX)).add(utils.ec.g.mul((r2.multiply(r3)).toString(Consts.HEX)));
 
-const pedComXMinusb=utils.ec.g.mul(x_minus_b.toString(Consts.HEX)).add(utils.ec.g.mul((r2.multiply(r3)).toString(Consts.HEX)));
+  const pedComXMinusb=utils.ec.g.mul(x_minus_b.toString(Consts.HEX)).add(utils.ec.g.mul((r2.multiply(r3)).toString(Consts.HEX)));
 
-//pedcom1-g*a+g*(r0*r1)-(g*(r2*r1)+g*(r0*r3))
+  //pedcom1-g*a+g*(r0*r1)-(g*(r2*r1)+g*(r0*r3))
 
-//verifier would take the original commitment and calulate random diiference and new commitment based on above formula
+  //verifier would take the original commitment and calulate random diiference and new commitment based on above formula
+
+  //console.log("x1", x1)
+  //console.log("start", start)
+  //console.log("end", end)
 
 
-const r1_diff=r2.subtract(r0);
-const r2_diff=r3.subtract(r1);
-const gstarA=utils.ec.g.mul(start.toString(Consts.HEX));
-const negGstarA=gstarA.neg(gstarA);
-const gr0tor1=utils.ec.g.mul((r0.multiply(r1)).toString(Consts.HEX));
-const gr2tor1=utils.ec.g.mul((r2.multiply(r1)).toString(Consts.HEX));
-const gr0tor3=utils.ec.g.mul((r0.multiply(r3).toString(Consts.HEX)))
-const sum_gr2tor1=gr2tor1.add(gr0tor3);
-const neg_sum_gr2tor1=sum_gr2tor1.neg(sum_gr2tor1)
+  const r1_diff=r2.subtract(r0);
+  const r2_diff=r3.subtract(r1);
+  const gstarA=utils.ec.g.mul(start.toString(Consts.HEX));
+  const negGstarA=gstarA.neg(gstarA);
+  const gr0tor1=utils.ec.g.mul((r0.multiply(r1)).toString(Consts.HEX));
+  const gr2tor1=utils.ec.g.mul((r2.multiply(r1)).toString(Consts.HEX));
+  const gr0tor3=utils.ec.g.mul((r0.multiply(r3).toString(Consts.HEX)))
+  const sum_gr2tor1=gr2tor1.add(gr0tor3);
+  const neg_sum_gr2tor1=sum_gr2tor1.neg(sum_gr2tor1)
 
-//pedcom1-g*a+g*(r0*r1)-(g*(r2*r1)+g*(r0*r3))
-/**
- * 
- * 
- pedcom1= g*x+g*(r2*r3)
-pedcomstart= g*a +g*(r0*r1)
-pedcomdiff= g*(x-a) +g*((r2-r0)*(r3-r1))
-g*(x-a) +g*((r2-r0)*(r3-r1))
-g*x-g*a +g*(r2*r3-r2*r1-r0*r3+r0*r1)
-g*x -g*a + g*(r2*r3)-g*(r2*r1)- g*(r0*r3) +g*(r0*r1)
+  //pedcom1-g*a+g*(r0*r1)-(g*(r2*r1)+g*(r0*r3))
+  /**
+   *
+   *
+   pedcom1= g*x+g*(r2*r3)
+  pedcomstart= g*a +g*(r0*r1)
+  pedcomdiff= g*(x-a) +g*((r2-r0)*(r3-r1))
+  g*(x-a) +g*((r2-r0)*(r3-r1))
+  g*x-g*a +g*(r2*r3-r2*r1-r0*r3+r0*r1)
+  g*x -g*a + g*(r2*r3)-g*(r2*r1)- g*(r0*r3) +g*(r0*r1)
 
-g*x+g*(r2*r3)-g*a+g*(r0*r1)-g*(r2*r1)-g*(r0*r3)
-g*x+g*(r2*r3)-g*a+g*(r0*r1)-(g*(r2*r1)+g*(r0*r3))
-pedcom1-g*a+g*(r0*r1)-(g*(r2*r1)+g*(r0*r3))
- */
-const finalpedCom=pedCom1.add(negGstarA).add(gr0tor1).add(neg_sum_gr2tor1)
+  g*x+g*(r2*r3)-g*a+g*(r0*r1)-g*(r2*r1)-g*(r0*r3)
+  g*x+g*(r2*r3)-g*a+g*(r0*r1)-(g*(r2*r1)+g*(r0*r3))
+  pedcom1-g*a+g*(r0*r1)-(g*(r2*r1)+g*(r0*r3))
+   */
+  const finalpedCom=pedCom1.add(negGstarA).add(gr0tor1).add(neg_sum_gr2tor1)
 //first proof to prove that a<x
-var {A,S,T1,T2,tauX,miu,tX,L,R,aTag,bTag} = rangeBpProver(difference,finalpedCom,r1_diff,r2_diff);
-const result10 = rangeBpVerifier(r1_diff,r2_diff,finalpedCom,A,S,T1,T2,tauX,miu,tX,L,R,aTag,bTag);
- if(result10 == false){} //abort
-   console.log("x>a",result10)
-//second proof to prove that x<b
-var {A,S,T1,T2,tauX,miu,tX,L,R,aTag,bTag} = rangeBpProver(x_minus_b,pedComXMinusb,r2,r3);
-const result11 = rangeBpVerifier(r2,r3,pedComXMinusb,A,S,T1,T2,tauX,miu,tX,L,R,aTag,bTag);
-  console.log("x<b",result11)
+  var {A,S,T1,T2,tauX,miu,tX,L,R,aTag,bTag} = rangeBpProver(difference,finalpedCom,r1_diff,r2_diff);
 
+  var proof1 = {A, S, T1, T2, tauX, miu, tX, L, R, aTag, bTag}
 
+  const result10 = rangeBpVerifier(r1_diff,r2_diff,finalpedCom,A,S,T1,T2,tauX,miu,tX,L,R,aTag,bTag);
+  if(result10 == false){} //abort
+  //console.log("x>a",result10)
+   //second proof to prove that x<b
+  var {A,S,T1,T2,tauX,miu,tX,L,R,aTag,bTag} = rangeBpProver(x_minus_b,pedComXMinusb,r2,r3);
+
+  var proof2 = {A, S, T1, T2, tauX, miu, tX, L, R, aTag, bTag}
+
+  const result11 = rangeBpVerifier(r2,r3,pedComXMinusb,A,S,T1,T2,tauX,miu,tX,L,R,aTag,bTag);
+  //console.log("x<b",result11)
+
+  var res = {
+    gtProof: proof1,
+    ltProof: proof2,
+    r1_diff, r2_diff, finalpedCom,
+    r2, r3, pedComXMinusb
+  }
+
+  //console.log(JSON.stringify(res, null, 2))
+  return res
 }
 
+function verify(proof){
+  var res = true;
+  with(proof){
 
-controller()
+    //first proof to prove that x>a
+    with(gtProof){
+      const result10 = rangeBpVerifier(r1_diff,r2_diff,finalpedCom,A,S,T1,T2,tauX,miu,tX,L,R,aTag,bTag);
+      res = res && result10;
+      //console.log("x>a",result10)
+    }
 
-
+    //second proof to prove that x<b
+    with(ltProof){
+      const result11 = rangeBpVerifier(r2,r3,pedComXMinusb,A,S,T1,T2,tauX,miu,tX,L,R,aTag,bTag);
+      res = res && result11;
+      //console.log("x<b",result11)
+    }
+  }
+  return res;
+}
 
 module.exports = {
-  controller,
+  prove,
+  verify
 };
-
